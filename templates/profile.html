@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Профиль</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Профиль</h1>
+        <nav>
+            <a href="{{ url_for('home') }}">Главная</a>
+            <a href="{{ url_for('tests') }}">Тесты</a>
+            <a href="{{ url_for('create_test') }}">Создать тест</a>
+            <a href="{{ url_for('logout') }}">Выйти</a>
+            <span class="muted">Вы: {{ current_user.username }}</span>
+        </nav>
+    </header>
+
+    <h2>История попыток</h2>
+    {% if attempts %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Дата</th>
+                    <th>Тест</th>
+                    <th>Результат</th>
+                    <th>Процент</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in attempts %}
+                <tr>
+                    <td>{{ a.date }}</td>
+                    <td>{{ a.title or ('Тест ' ~ a.test_id) }}</td>
+                    <td>{{ a.score }} / {{ a.max_score }}</td>
+                    <td>{{ a.percent }}%</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Попыток не найдено.</p>
+    {% endif %}
+
+    <h2>Прогресс</h2>
+    <canvas id="progressChart" width="600" height="300"></canvas>
+
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- JSON data for the chart (rendered as raw JSON to avoid Jinja inside JS) -->
+    <script id="chart-data" type="application/json">{{ chart_data | tojson }}</script>
+    <script>
+        const raw = document.getElementById('chart-data').textContent;
+        const chartData = JSON.parse(raw || '{}');
+        const ctx = document.getElementById('progressChart').getContext('2d');
+        const myChart = new Chart(ctx, {
+            type: 'line',
+            data: chartData,
+            options: {
+                scales: {
+                    y: {
+                        suggestedMin: 0,
+                        suggestedMax: 100
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

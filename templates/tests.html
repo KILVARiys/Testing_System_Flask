@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Доступные тесты</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header>
+    <h1>Список тестов</h1>
+    <nav>
+      <a href="{{ url_for('home') }}">Главная</a>
+      <a href="{{ url_for('profile') }}">Профиль</a>
+      <a href="{{ url_for('create_test') }}">Создать тест</a>
+    </nav>
+  </header>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="flashes">
+          {% for category, message in messages %}
+            <div class="flash {{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% if tests %}
+        <ul class="tests-list">
+        {% for t in tests %}
+            <li class="test-item">
+                <h2><a href="{{ url_for('test_detail', test_id=t.id) }}">{{ t.title }}</a></h2>
+                <p>{{ t.description }}</p>
+                <p>Вопросов: {{ t.question_count }}</p>
+                <p>Время (мин): {{ t.time_limit }}</p>
+                <p>Лучший результат: {% if t.best_score is not none %}{{ t.best_score }} / {{ t.question_count }}{% else %}—{% endif %}</p>
+                <p><a href="{{ url_for('test_detail', test_id=t.id) }}">Начать / продолжить</a></p>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>Тесты не найдены.</p>
+    {% endif %}
+
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Создать тест</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <h1>Создать тест</h1>
+        <nav>
+            <a href="{{ url_for('home') }}">Главная</a>
+            <a href="{{ url_for('tests') }}">Тесты</a>
+            <a href="{{ url_for('profile') }}">Профиль</a>
+            <a href="{{ url_for('logout') }}">Выйти</a>
+        </nav>
+    </header>
+
+    <main>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="flashes">
+              {% for category, message in messages %}
+                <div class="flash {{ category }}">{{ message }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+
+        <form id="create-form" method="POST">
+            <div>
+                <label for="title">Название теста</label>
+                <input id="title" name="title" required>
+            </div>
+            <div>
+                <label for="description">Описание</label>
+                <textarea id="description" name="description"></textarea>
+            </div>
+            <div>
+                <label for="time_limit">Время (минуты)</label>
+                <input id="time_limit" name="time_limit" type="number" min="0" value="0">
+            </div>
+
+            <h3>Вопросы</h3>
+            <div id="questions"></div>
+
+            <p>
+                <button type="button" id="add-question">Добавить вопрос</button>
+            </p>
+
+            <!-- payload will be filled with JSON of the test -->
+            <input type="hidden" name="payload" id="payload">
+            <p>
+                <button type="submit">Создать тест</button>
+                <a class="btn" href="{{ url_for('tests') }}">Отмена</a>
+            </p>
+        </form>
+    </main>
+
+<script>
+// Simple dynamic form builder: add questions and answers, then serialize to JSON
+(function(){
+    const questionsEl = document.getElementById('questions');
+    const addQBtn = document.getElementById('add-question');
+    const form = document.getElementById('create-form');
+    const payloadEl = document.getElementById('payload');
+
+    function createAnswerEl(qIndex, aIndex){
+        const wrapper = document.createElement('div');
+        wrapper.className = 'answer-row';
+        wrapper.innerHTML = `
+            <input type="text" class="a-text" placeholder="Текст ответа">
+            <label><input type="checkbox" class="a-correct"> правильный</label>
+            <button type="button" class="remove-answer">Удалить</button>
+        `;
+        wrapper.querySelector('.remove-answer').addEventListener('click', ()=> wrapper.remove());
+        return wrapper;
+    }
+
+    function createQuestionEl(){
+        const qIndex = questionsEl.children.length;
+        const container = document.createElement('div');
+        container.className = 'question-block';
+        container.innerHTML = `
+            <div>
+                <label>Вопрос</label>
+                <input type="text" class="q-text" placeholder="Текст вопроса" required>
+            </div>
+            <div class="answers"></div>
+            <p>
+                <button type="button" class="add-answer">Добавить ответ</button>
+                <button type="button" class="remove-question">Удалить вопрос</button>
+            </p>
+            <hr>
+        `;
+        const answersContainer = container.querySelector('.answers');
+        container.querySelector('.add-answer').addEventListener('click', ()=>{
+            answersContainer.appendChild(createAnswerEl(qIndex, answersContainer.children.length));
+        });
+        container.querySelector('.remove-question').addEventListener('click', ()=> container.remove());
+        // add two default answers
+        answersContainer.appendChild(createAnswerEl(qIndex,0));
+        answersContainer.appendChild(createAnswerEl(qIndex,1));
+        return container;
+    }
+
+    addQBtn.addEventListener('click', ()=>{
+        questionsEl.appendChild(createQuestionEl());
+    });
+
+    // Add initial question
+    addQBtn.click();
+
+    form.addEventListener('submit', function(e){
+        // build payload
+        const title = document.getElementById('title').value.trim();
+        const description = document.getElementById('description').value.trim();
+        const time_limit = parseInt(document.getElementById('time_limit').value) || 0;
+
+        const questions = [];
+        document.querySelectorAll('.question-block').forEach((qb)=>{
+            const qtext = qb.querySelector('.q-text').value.trim();
+            const answers = [];
+            qb.querySelectorAll('.answer-row').forEach((ar)=>{
+                const atext = ar.querySelector('.a-text').value.trim();
+                const is_correct = ar.querySelector('.a-correct').checked;
+                if(atext) answers.push({text: atext, is_correct: is_correct});
+            });
+            if(qtext) questions.push({text: qtext, answers: answers});
+        });
+
+        const payload = {title, description, time_limit, questions};
+        payloadEl.value = JSON.stringify(payload);
+        // let form submit normally
+    });
+})();
+</script>
+</body>
+</html>

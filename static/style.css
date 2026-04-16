@@ -1,0 +1,97 @@
+/* Simple clean styling for Testing System */
+:root{
+	--bg: #f6f8fa;
+	--card: #ffffff;
+	--muted: #6b7280;
+	--accent: #2563eb;
+	--success: #16a34a;
+	--error: #dc2626;
+	--warning: #f59e0b;
+	--border: #e5e7eb;
+	--radius: 8px;
+	font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+*{box-sizing:border-box}
+body{
+	margin:0;
+	background:var(--bg);
+	color:#111827;
+	line-height:1.5;
+	-webkit-font-smoothing:antialiased;
+	-moz-osx-font-smoothing:grayscale;
+}
+
+header{
+	background:linear-gradient(90deg,#fff,#fafafa);
+	border-bottom:1px solid var(--border);
+	padding:20px;
+}
+header h1{margin:0;font-size:20px}
+header p{margin:4px 0 0;color:var(--muted);font-size:14px}
+nav{margin-top:10px;display:flex;gap:10px;align-items:center}
+nav a{color:var(--accent);text-decoration:none;padding:8px 12px;border-radius:6px}
+nav a.btn{background:var(--accent);color:#fff}
+nav a:hover{opacity:0.95}
+.muted{color:var(--muted);margin-left:8px;font-size:13px}
+
+.flashes{max-width:900px;margin:12px auto;padding:0 16px}
+.flash{padding:10px 12px;border-radius:6px;margin-bottom:8px;border:1px solid transparent}
+.flash.success{background:#ecfdf5;color:var(--success);border-color:#bbf7d0}
+.flash.error{background:#fff1f2;color:var(--error);border-color:#fecaca}
+.flash.warning{background:#fffbeb;color:var(--warning);border-color:#fde68a}
+
+main{max-width:900px;margin:24px auto;padding:0 16px}
+main h2{margin-top:0}
+
+.btn{display:inline-block;padding:8px 14px;background:var(--accent);color:#fff;border-radius:6px;text-decoration:none}
+
+/* Tests list */
+.tests-list{list-style:none;padding:0;margin:0;display:grid;gap:12px}
+.test-item{background:var(--card);border:1px solid var(--border);padding:14px;border-radius:var(--radius)}
+.test-item h2{margin:0 0 6px}
+.test-item p{margin:4px 0;color:var(--muted)}
+
+/* Test detail */
+.question{margin-bottom:12px;border:1px solid var(--border);padding:12px;border-radius:6px}
+.question legend{font-weight:600}
+.question label{cursor:pointer}
+.question input[type=radio]{margin-right:8px}
+#timer{font-weight:600;margin:12px 0;padding:8px;background:#fff;border:1px solid var(--border);display:inline-block;border-radius:6px}
+
+form input[type=text],form input[type=email],form input[type=password],form select,textarea{
+	width:100%;padding:10px;border:1px solid var(--border);border-radius:6px;background:#fff
+}
+form button{padding:10px 14px;border-radius:6px;border:0;background:var(--accent);color:#fff}
+
+table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+table thead{background:#fafafa}
+table th,table td{padding:10px;border-bottom:1px solid var(--border);text-align:left}
+table tbody tr:last-child td{border-bottom:0}
+
+footer{max-width:900px;margin:30px auto;padding:0 16px;color:var(--muted);font-size:13px}
+
+/* Responsive */
+@media (max-width:600px){
+	nav{flex-wrap:wrap}
+	.tests-list{grid-template-columns:1fr}
+}
+
+/* Small helpers */
+.small{font-size:13px;color:var(--muted)}
+
+/* Create test form specifics */
+.question-block{background:var(--card);border:1px solid var(--border);padding:12px;border-radius:8px;margin-bottom:12px}
+.question-block .q-text{width:100%;padding:8px;border:1px solid var(--border);border-radius:6px;margin-bottom:8px}
+.answers{margin-left:0;margin-top:8px}
+.answer-row{display:flex;gap:8px;align-items:center;margin-bottom:6px}
+.answer-row .a-text{flex:1;padding:8px;border:1px solid var(--border);border-radius:6px}
+.answer-row .a-correct{margin-left:6px}
+.add-answer, .remove-answer{background:#fff;border:1px solid var(--border);padding:6px 8px;border-radius:6px;cursor:pointer}
+.remove-answer{background:#fee2e2;border-color:#fecaca}
+.add-answer{background:#eff6ff;border-color:#bfdbfe}
+.question-block hr{border:0;border-top:1px solid var(--border);margin-top:12px}
+
+.question-block label{display:block;margin-bottom:6px;font-weight:600}
+
+
